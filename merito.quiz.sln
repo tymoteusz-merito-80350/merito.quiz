@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "diagrams", "diagrams", "{C5441C28-063C-4C6B-9A88-07956DE07ADE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{2ED73021-49C5-41B4-9FEE-0AD5CB99719E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeritoQuiz", "src\MeritoQuiz\MeritoQuiz.csproj", "{4CA3EEFA-794B-4280-AF02-CCF2FF2959F5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{4CA3EEFA-794B-4280-AF02-CCF2FF2959F5} = {2ED73021-49C5-41B4-9FEE-0AD5CB99719E}
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4CA3EEFA-794B-4280-AF02-CCF2FF2959F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4CA3EEFA-794B-4280-AF02-CCF2FF2959F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4CA3EEFA-794B-4280-AF02-CCF2FF2959F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4CA3EEFA-794B-4280-AF02-CCF2FF2959F5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
