@@ -6,4 +6,9 @@ public partial class Main : ContentPage
     {
         InitializeComponent();
     }
+
+    private async void GeneralButton_OnClicked(object? sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync(nameof(Question));
+    }
 }

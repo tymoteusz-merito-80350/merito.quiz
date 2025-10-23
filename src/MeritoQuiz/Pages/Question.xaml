@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:MeritoQuiz.ViewModels"
+             xmlns:views="clr-namespace:MeritoQuiz.Views"
+             x:Class="MeritoQuiz.Pages.Question"
+             Title="Quiz" x:DataType="viewModels:QuestionViewModel">
+    
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior IsVisible="False" />
+    </Shell.BackButtonBehavior>
+    
+    <ScrollView>
+        <VerticalStackLayout 
+            Padding="30,30"
+            Spacing="25">
+            <Border Style="{StaticResource Section}">
+                <VerticalStackLayout>
+                    <Label Style="{StaticResource Headline}" Text="{Binding QuestionTitle}" />
+                    <Label Text="{Binding QuestionText}" />
+                </VerticalStackLayout>
+            </Border>
+            
+            <Border Style="{StaticResource Section}">
+                <VerticalStackLayout Spacing="25">
+                    <CollectionView ItemsSource="{Binding Options}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <views:AnswerOptionView />
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                    
+                    <Button
+                        x:Name="GeneralButton"
+                        Text="Sprawdź"
+                        HorizontalOptions="Fill"
+                        Clicked="GeneralButton_OnClicked" />
+                </VerticalStackLayout>
+            </Border>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

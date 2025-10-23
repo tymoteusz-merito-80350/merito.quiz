@@ -13,25 +13,24 @@
         </ResourceDictionary>
     </ContentPage.Resources>
     
-    <VerticalStackLayout>
-        <ScrollView>
-            <VerticalStackLayout
-                Padding="30,30"
-                Spacing="25">
-                <Button
-                    x:Name="GeneralButton"
-                    Text="Wiedza ogólna"
-                    HorizontalOptions="Fill" />
-                <Button
-                    x:Name="LibraryBtn"
-                    Text="Wiedza o bibliotece"
-                    HorizontalOptions="Fill" />
-                <Button
-                    x:Name="TriviaBtn"
-                    Text="Ciekawostki"
-                    HorizontalOptions="Fill" />
-            </VerticalStackLayout>
-        </ScrollView>
-    </VerticalStackLayout>
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="30,30"
+            Spacing="25">
+            <Button
+                x:Name="GeneralButton"
+                Text="Wiedza ogólna"
+                HorizontalOptions="Fill" 
+                Clicked="GeneralButton_OnClicked" />
+            <Button
+                x:Name="LibraryBtn"
+                Text="Wiedza o bibliotece"
+                HorizontalOptions="Fill" />
+            <Button
+                x:Name="TriviaBtn"
+                Text="Ciekawostki"
+                HorizontalOptions="Fill" />
+        </VerticalStackLayout>
+    </ScrollView>
 
 </ContentPage>
