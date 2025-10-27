@@ -2,9 +2,9 @@ using Microsoft.Maui.Controls;
 
 namespace MeritoQuiz.Views;
 
-public partial class AnswerOptionView : ContentView
+public partial class AnswerView : ContentView
 {
-    public AnswerOptionView()
+    public AnswerView()
     {
         InitializeComponent();
     }

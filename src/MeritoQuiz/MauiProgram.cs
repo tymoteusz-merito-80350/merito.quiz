@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using MeritoQuiz.Services;
+using Microsoft.Extensions.Logging;
 
 namespace MeritoQuiz;
 
@@ -18,6 +19,10 @@ public static class MauiProgram
 #if DEBUG
         builder.Logging.AddDebug();
 #endif
+
+        builder.Services.AddSingleton<ViewModels.Main>();
+        builder.Services.AddSingleton<QuizService>();
+        builder.Services.AddSingleton<QuestionService>();
 
         return builder.Build();
     }

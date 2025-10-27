@@ -5,7 +5,7 @@
              xmlns:viewModels="clr-namespace:MeritoQuiz.ViewModels"
              xmlns:views="clr-namespace:MeritoQuiz.Views"
              x:Class="MeritoQuiz.Pages.Question"
-             Title="Quiz" x:DataType="viewModels:QuestionViewModel">
+             Title="Quiz" x:DataType="viewModels:Question">
     
     <Shell.BackButtonBehavior>
         <BackButtonBehavior IsVisible="False" />
@@ -27,7 +27,7 @@
                     <CollectionView ItemsSource="{Binding Options}">
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
-                                <views:AnswerOptionView />
+                                <views:AnswerView />
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
                     </CollectionView>

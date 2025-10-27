@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace MeritoQuiz.ViewModels;
 
-public class AnswerOption : INotifyPropertyChanged
+public class Category : INotifyPropertyChanged
 {
     private bool _isSelected;
     private string _text = string.Empty;

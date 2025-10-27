@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 
 namespace MeritoQuiz.ViewModels;
 
-public class QuestionViewModel : INotifyPropertyChanged
+public class Question : INotifyPropertyChanged
 {
     public string QuestionTitle
     {
@@ -32,21 +32,29 @@ public class QuestionViewModel : INotifyPropertyChanged
         }
     }
 
-    public ObservableCollection<AnswerOption> Options { get; } = [];
+    public ObservableCollection<Answer> Options { get; } = [];
 
-    private string _questionTitle = "Pytanie 1/10";
-    private string _questionText = "Lorem ipsum dolor sit amet.";
-
-    public QuestionViewModel()
-    {
-        // Demo data
-        Options.Add(new AnswerOption { Text = "Odpowiedź A" });
-        Options.Add(new AnswerOption { Text = "Odpowiedź B" });
-        Options.Add(new AnswerOption { Text = "Odpowiedź C" });
-        Options.Add(new AnswerOption { Text = "Odpowiedź D" });
-    }
+    private string _questionTitle = string.Empty;
+    private string _questionText = string.Empty;
 
     public event PropertyChangedEventHandler? PropertyChanged;
+
+    public void SetOptions(IEnumerable<Models.Answer> answers)
+    {
+        Options.Clear();
+        
+        foreach (var answer in answers) 
+        {
+            Options.Add(new Answer {
+                Text = answer.Text,
+            }); 
+        }
+    }
+    
+    public IEnumerable<string> GetCheckedOptions()
+    {
+        return Options.Where(o => o.IsSelected).Select(o => o.Text);
+    }
     
     protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

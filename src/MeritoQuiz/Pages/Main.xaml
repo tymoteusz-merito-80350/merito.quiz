@@ -1,14 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="MeritoQuiz.Pages.Main">
+             xmlns:views="clr-namespace:MeritoQuiz.Views"
+             xmlns:viewModels="clr-namespace:MeritoQuiz.ViewModels"
+             x:Class="MeritoQuiz.Pages.Main" x:DataType="viewModels:Main">
 
     <ContentPage.Resources>
         <ResourceDictionary>
-            <Style TargetType="Button" BasedOn="{StaticResource BaseButtonStyle}">
-                <Setter Property="Padding" Value="0, 50" />
-                <Setter Property="FontSize" Value="24" />
-                <Setter Property="FontAttributes" Value="Bold" />
+            <Style TargetType="ScrollView">
+                <Setter Property="Shadow">
+                    <Setter.Value>
+                        <Shadow Brush="Black" Opacity="0.3" Radius="12" />
+                    </Setter.Value>
+                </Setter>
             </Style>
         </ResourceDictionary>
     </ContentPage.Resources>
@@ -17,19 +21,13 @@
         <VerticalStackLayout
             Padding="30,30"
             Spacing="25">
-            <Button
-                x:Name="GeneralButton"
-                Text="Wiedza ogólna"
-                HorizontalOptions="Fill" 
-                Clicked="GeneralButton_OnClicked" />
-            <Button
-                x:Name="LibraryBtn"
-                Text="Wiedza o bibliotece"
-                HorizontalOptions="Fill" />
-            <Button
-                x:Name="TriviaBtn"
-                Text="Ciekawostki"
-                HorizontalOptions="Fill" />
+            <CollectionView ItemsSource="{Binding Categories}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <views:CategoryView Margin="0,0,0,25" />
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
         </VerticalStackLayout>
     </ScrollView>
 
