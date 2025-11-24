@@ -10,3 +10,4 @@
 local.properties
 bin
 obj
+*.sln.DotSettings.user
