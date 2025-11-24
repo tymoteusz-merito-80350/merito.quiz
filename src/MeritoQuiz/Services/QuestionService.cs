@@ -1,404 +1,198 @@
+using System.Net;
+using System.Net.Http.Json;
+using System.Text.Json;
 using MeritoQuiz.Models;
+using MeritoQuiz.Shared.DTOs;
+using MeritoQuiz.Shared.Models;
 
 namespace MeritoQuiz.Services;
 
 public class QuestionService
 {
+    private readonly QuizApiOptions _options;
+    private readonly JsonSerializerOptions _jsonOptions = new(JsonSerializerDefaults.Web)
+    {
+        WriteIndented = false,
+    };
+
+    private const string CacheFileName = "questions.cache.json";
     private List<Category> _categories = [];
+
+    public QuestionService(QuizApiOptions options)
+    {
+        _options = options;
+    }
 
     public async ValueTask<IEnumerable<Category>> GetCategories()
     {
         if (_categories.Count == 0)
-            await FetchData();
+            await EnsureSynchronized();
 
         return _categories.AsEnumerable();
     }
 
-    private Task FetchData()
+    private async Task EnsureSynchronized()
     {
-        _categories =
-        [
-            new Category()
+        var cache = await LoadCacheAsync();
+        var lastSync = cache?.LastSync ?? DateTime.MinValue;
+
+        List<CategoryDto>? incoming;
+        try
+        {
+            using var client = new HttpClient();
+
+            client.BaseAddress = new Uri(_options.BaseUrl.TrimEnd('/') + "/");
+            
+            var request = new QuestionsSyncRequest(lastSync);
+            using var resp = await client.PostAsJsonAsync("questions", request, _jsonOptions);
+
+            if (resp.StatusCode == HttpStatusCode.NotModified)
             {
-                Name = "Wiedza ogólna",
-                Icon = "building",
-                Questions =
-                [
-                    new Question
-                    {
-                        Text = "W którym roku powstała Wyższa Szkoła Bankowa w Gdańsku?",
-                        Answers =
-                        [
-                            new Answer
-                            {
-                                Text = "1994",
-                            },
-                            new Answer
-                            {
-                                Text = "1998",
-                                IsCorrect = true,
-                            },
-                            new Answer
-                            {
-                                Text = "2001",
-                            },
-                            new Answer
-                            {
-                                Text = "2005",
-                            },
-                        ],
-                    },
-                    new Question
-                    {
-                        Text = "Jak brzmi pełna aktualna nazwa uczelni po rebrandingu w 2023 roku?",
-                        Answers =
-                        [
-                            new Answer
-                            {
-                                Text = "Akademia WSB",
-                            },
-                            new Answer
-                            {
-                                Text = "WSB Merito Gdańsk",
-                                IsCorrect = true,
-                            },
-                            new Answer
-                            {
-                                Text = "Uniwersytet Merito",
-                            },
-                            new Answer
-                            {
-                                Text = "WSB Biznes School",
-                            },
-                        ],
-                    },
-                    new Question
-                    {
-                        Text = "Na jakiej ulicy znajduje się główny kampus WSB Merito w Gdańsku?",
-                        Answers =
-                        [
-                            new Answer
-                            {
-                                Text = "Armii Krajowej",
-                            },
-                            new Answer
-                            {
-                                Text = "Grunwaldzka",
-                            },
-                            new Answer
-                            {
-                                Text = "Łąkowa",
-                                IsCorrect = true,
-                            },
-                            new Answer
-                            {
-                                Text = "Dolna Brama",
-                            },
-                        ],
-                    },
-                    new Question
-                    {
-                        Text = "Jakie kolory dominują w identyfikacji wizualnej WSB Merito?",
-                        Answers =
-                        [
-                            new Answer
-                            {
-                                Text = "Niebieski i biały",
-                            },
-                            new Answer
-                            {
-                                Text = "Czerwony i czarny",
-                            },
-                            new Answer
-                            {
-                                Text = "Zielony i żółty",
-                            },
-                            new Answer
-                            {
-                                Text = "Granatowy i pomarańczowy",
-                                IsCorrect = true,
-                            },
-                        ],
-                    },
-                    new Question
-                    {
-                        Text =
-                            "WSB Merito Gdańsk jest częścią większej sieci uczelni. Ile uczelni Merito działa w Polsce (stan na 2025)?",
-                        Answers =
-                        [
-                            new Answer
-                            {
-                                Text = "8",
-                            },
-                            new Answer
-                            {
-                                Text = "10",
-                            },
-                            new Answer
-                            {
-                                Text = "11",
-                                IsCorrect = true,
-                            },
-                            new Answer
-                            {
-                                Text = "12",
-                            },
-                        ],
-                    },
-                    new Question
-                    {
-                        Text = "Kto jest rektorem WSB Merito w Gdańsku (2024/2025)?",
-                        Answers =
-                        [
-                            new Answer
-                            {
-                                Text = "dr hab. inż. Ewa Kulińska",
-                            },
-                            new Answer
-                            {
-                                Text = "dr Krzysztof Korda",
-                                IsCorrect = true,
-                            },
-                            new Answer
-                            {
-                                Text = "dr Joanna Bogucka",
-                            },
-                            new Answer
-                            {
-                                Text = "prof. Andrzej Nowak",
-                            },
-                        ],
-                    },
-                    new Question
-                    {
-                        Text = "Jakie formy studiów oferuje uczelnia?",
-                        Answers =
-                        [
-                            new Answer
-                            {
-                                Text = "tylko dzienne",
-                            },
-                            new Answer
-                            {
-                                Text = "dzienne i wieczorowe",
-                            },
-                            new Answer
-                            {
-                                Text = "stacjonarne i niestacjonarne",
-                                IsCorrect = true,
-                            },
-                            new Answer
-                            {
-                                Text = "wyłącznie online",
-                            },
-                        ],
-                    },
-                    new Question
-                    {
-                        Text = "Jak nazywa się system, w którym studenci logują się do planu zajęć i ocen?",
-                        Answers =
-                        [
-                            new Answer
-                            {
-                                Text = "Moodle",
-                            },
-                            new Answer
-                            {
-                                Text = "Extranet",
-                                IsCorrect = true,
-                            },
-                            new Answer
-                            {
-                                Text = "USOS",
-                            },
-                            new Answer
-                            {
-                                Text = "EduPortal",
-                            },
-                        ],
-                    },
-                    new Question
-                    {
-                        Text = "Jakie miasto (poza Gdańskiem) należy do filii WSB Merito Gdańsk?",
-                        Answers =
-                        [
-                            new Answer
-                            {
-                                Text = "Sopot",
-                            },
-                            new Answer
-                            {
-                                Text = "Elbląg",
-                                IsCorrect = true,
-                            },
-                            new Answer
-                            {
-                                Text = "Gdynia",
-                            },
-                            new Answer
-                            {
-                                Text = "Malbork",
-                            },
-                        ],
-                    },
-                    new Question
-                    {
-                        Text = "Jak nazywa się uczelniany samorząd studencki?",
-                        Answers =
-                        [
-                            new Answer
-                            {
-                                Text = "Parlament Studencki",
-                            },
-                            new Answer
-                            {
-                                Text = "Rada Studentów",
-                            },
-                            new Answer
-                            {
-                                Text = "Samorząd Studentów WSB Merito Gdańsk",
-                                IsCorrect = true,
-                            },
-                            new Answer
-                            {
-                                Text = "Klub Studencki",
-                            },
-                        ],
-                    },
-                    new Question
-                    {
-                        Text =
-                            "WSB Merito Gdańsk współpracuje z uczelniami w Europie. W ramach jakiego programu studenci mogą studiować za granicą?",
-                        Answers =
-                        [
-                            new Answer
-                            {
-                                Text = "Erasmus+",
-                                IsCorrect = true,
-                            },
-                            new Answer
-                            {
-                                Text = "Horizon",
-                            },
-                            new Answer
-                            {
-                                Text = "Comenius",
-                            },
-                            new Answer
-                            {
-                                Text = "Erasmus Old",
-                            },
-                        ],
-                    },
-                    new Question
-                    {
-                        Text = "Jakie kierunki należą do najpopularniejszych na WSB Merito Gdańsk?",
-                        Answers =
-                        [
-                            new Answer
-                            {
-                                Text = "Informatyka, Zarządzanie, Finanse i Rachunkowość",
-                                IsCorrect = true,
-                            },
-                            new Answer
-                            {
-                                Text = "Historia, Filologia, Psychologia",
-                            },
-                            new Answer
-                            {
-                                Text = "Architektura, Prawo, Fizyka",
-                            },
-                            new Answer
-                            {
-                                Text = "Chemia, Matematyka, Muzykologia",
-                            },
-                        ],
-                    },
-                    new Question
-                    {
-                        Text =
-                            "Jak nazywa się wydarzenie organizowane dla nowych studentów na początku roku akademickiego?",
-                        Answers =
-                        [
-                            new Answer
-                            {
-                                Text = "Otrzęsiny",
-                            },
-                            new Answer
-                            {
-                                Text = "Dzień Adaptacyjny",
-                                IsCorrect = true,
-                            },
-                            new Answer
-                            {
-                                Text = "Inauguracja Roku",
-                            },
-                            new Answer
-                            {
-                                Text = "Merito Start",
-                            },
-                        ],
-                    },
-                    new Question
-                    {
-                        Text = "Jakie motto promocyjne towarzyszyło marce Merito po rebrandingu?",
-                        Answers =
-                        [
-                            new Answer
-                            {
-                                Text = "Uczelnia przyszłości",
-                            },
-                            new Answer
-                            {
-                                Text = "Twoja kariera. Nasza pasja.",
-                                IsCorrect = true,
-                            },
-                            new Answer
-                            {
-                                Text = "Merito – uczymy praktycznie",
-                            },
-                            new Answer
-                            {
-                                Text = "Z nami zbudujesz swoją przyszłość",
-                            },
-                        ],
-                    },
-                    new Question
-                    {
-                        Text = "Które z poniższych udogodnień można znaleźć na kampusie WSB Merito Gdańsk?",
-                        Answers =
-                        [
-                            new Answer
-                            {
-                                Text = "Bibliotekę, bufet, strefę relaksu",
-                                IsCorrect = true,
-                            },
-                            new Answer
-                            {
-                                Text = "Basen, kino, klub nocny",
-                            },
-                            new Answer
-                            {
-                                Text = "Tylko sale wykładowe",
-                            },
-                            new Answer
-                            {
-                                Text = "Laboratorium chemiczne",
-                            },
-                        ],
-                    },
-                ],
-            },
-            new Category()
+                incoming = null;
+            }
+            else
             {
-                Name = "Wiedza o bibliotece",
-            },
-            new Category()
+                resp.EnsureSuccessStatusCode();
+                incoming = await resp.Content.ReadFromJsonAsync<List<CategoryDto>>(_jsonOptions);
+            }
+        }
+        catch
+        {
+            incoming = null;
+        }
+
+        if (incoming is { Count: > 0 })
+        {
+            var updated = Merge(cache?.Categories ?? [], incoming, lastSync);
+            var newCache = new QuestionsCache
             {
-                Name = "Ciekawostki",
-            },
-        ];
-        
-        return Task.CompletedTask;
+                LastSync = DateTime.UtcNow,
+                Categories = updated,
+            };
+            await SaveCacheAsync(newCache);
+            cache = newCache;
+        }
+        else if (cache == null)
+        {
+            throw new NotImplementedException("No questions available: sync failed and no local cache present.");
+        }
+
+        _categories = MapToUi(cache!.Categories);
+    }
+
+    private static List<CategoryDto> Merge(List<CategoryDto> existing, List<CategoryDto> incoming, DateTime lastSync)
+    {
+        var catById = existing.ToDictionary(c => c.Id);
+
+        foreach (var cat in incoming)
+        {
+            if (!catById.TryGetValue(cat.Id, out var targetCat))
+            {
+                catById[cat.Id] = new CategoryDto
+                {
+                    Id = cat.Id,
+                    Name = cat.Name,
+                    Icon = cat.Icon,
+                    Questions = cat.Questions.ToList(),
+                };
+                continue;
+            }
+
+            targetCat.Name = cat.Name;
+            targetCat.Icon = cat.Icon;
+
+            var qById = targetCat.Questions.ToDictionary(q => q.Id);
+            foreach (var q in cat.Questions)
+            {
+                if (qById.TryGetValue(q.Id, out var existingQuestion))
+                {
+                    existingQuestion.Text = q.Text;
+                    existingQuestion.ModifiedAt = q.ModifiedAt;
+                    existingQuestion.CategoryId = q.CategoryId;
+                    existingQuestion.Answers = q.Answers
+                        .OrderBy(a => a.Order)
+                        .Select(a => new AnswerDto
+                        {
+                            Id = a.Id,
+                            QuestionId = a.QuestionId,
+                            Order = a.Order,
+                            Text = a.Text,
+                            IsCorrect = a.IsCorrect,
+                        }).ToList();
+                }
+                else
+                {
+                    qById[q.Id] = new QuestionDto
+                    {
+                        Id = q.Id,
+                        CategoryId = q.CategoryId,
+                        Text = q.Text,
+                        ModifiedAt = q.ModifiedAt,
+                        Answers = q.Answers.OrderBy(a => a.Order).ToList(),
+                    };
+                }
+            }
+            targetCat.Questions = qById.Values.OrderBy(qq => qq.Text).ToList();
+        }
+
+        return catById.Values.OrderBy(c => c.Name).ToList();
+    }
+
+    private async Task<QuestionsCache?> LoadCacheAsync()
+    {
+        try
+        {
+            var path = Path.Combine(GetAppDataDirectory(), CacheFileName);
+            if (!File.Exists(path))
+                return null;
+
+            await using var fs = File.OpenRead(path);
+            var cache = await JsonSerializer.DeserializeAsync<QuestionsCache>(fs, _jsonOptions);
+            return cache;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private async Task SaveCacheAsync(QuestionsCache cache)
+    {
+        var dir = GetAppDataDirectory();
+        var path = Path.Combine(dir, CacheFileName);
+        await using var fs = File.Create(path);
+        await JsonSerializer.SerializeAsync(fs, cache, _jsonOptions);
+    }
+
+    private static List<Category> MapToUi(List<CategoryDto> categories)
+    {
+        return categories.Select(c => new Category
+        {
+            Name = c.Name,
+            Icon = c.Icon,
+            Questions = c.Questions.Select(q => new Question
+            {
+                Text = q.Text,
+                Answers = q.Answers
+                    .OrderBy(a => a.Order)
+                    .Select(a => new Answer
+                    {
+                        Order = a.Order,
+                        Text = a.Text,
+                        IsCorrect = a.IsCorrect,
+                    }).ToList(),
+            }).ToList(),
+        }).ToList();
+    }
+
+    private static string GetAppDataDirectory()
+    {
+#if CORE
+        var dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "MeritoQuiz");
+        Directory.CreateDirectory(dir);
+        return dir;
+#else
+        return Microsoft.Maui.Storage.FileSystem.AppDataDirectory;
+#endif
     }
 }

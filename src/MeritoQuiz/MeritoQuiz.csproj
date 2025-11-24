@@ -63,9 +63,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)"/>
-        <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.5"/>
-    </ItemGroup>
+    <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)"/>
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.5"/>
+  </ItemGroup>
 
     <ItemGroup>
       <MauiXaml Update="Pages\Main.xaml">
@@ -80,4 +80,8 @@
       </Compile>
     </ItemGroup>
 
-</Project>
+    <ItemGroup>
+      <ProjectReference Include="../MeritoQuiz.Shared/MeritoQuiz.Shared.csproj" />
+    </ItemGroup>
+
+  </Project>

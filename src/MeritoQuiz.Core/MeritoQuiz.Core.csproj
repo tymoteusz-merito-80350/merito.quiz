@@ -3,6 +3,7 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <DefineConstants>$(DefineConstants);CORE</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <!-- Link shared source files from the MAUI app to make them testable without MAUI runtime -->
@@ -21,5 +22,14 @@
     <Compile Include="../MeritoQuiz/Services/QuestionService.cs">
       <Link>Services/QuestionService.cs</Link>
     </Compile>
+    <Compile Include="../MeritoQuiz/Services/QuizApiOptions.cs">
+      <Link>Services/QuizApiOptions.cs</Link>
+    </Compile>
+    <Compile Include="../MeritoQuiz/Services/QuestionsCache.cs">
+      <Link>Services/QuestionsCache.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../MeritoQuiz.Shared/MeritoQuiz.Shared.csproj" />
   </ItemGroup>
 </Project>

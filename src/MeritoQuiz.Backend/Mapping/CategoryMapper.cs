@@ -1,6 +1,5 @@
-using MeritoQuiz.Backend.DTOs;
+using MeritoQuiz.Shared.DTOs;
 using MeritoQuiz.Backend.Entities;
-using MeritoQuiz.Backend.Models;
 
 namespace MeritoQuiz.Backend.Mapping;
 

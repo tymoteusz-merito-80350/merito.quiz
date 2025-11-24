@@ -1,5 +1,6 @@
 ﻿using MeritoQuiz.Services;
 using Microsoft.Extensions.Logging;
+using MeritoQuiz.Shared.DTOs;
 
 namespace MeritoQuiz;
 
@@ -25,6 +26,11 @@ public static class MauiProgram
         builder.Services.AddSingleton<QuizService>();
         builder.Services.AddSingleton<QuestionService>();
         builder.Services.AddSingleton<IPopupService, PopupService>();
+
+        var apiBase = Environment.GetEnvironmentVariable("MERITOQUIZ_API_BASE")
+                       ?? "http://10.0.2.2:5260";
+        
+        builder.Services.AddSingleton(new QuizApiOptions { BaseUrl = apiBase });
 
         return builder.Build();
     }
