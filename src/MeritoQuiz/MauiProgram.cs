@@ -21,8 +21,10 @@ public static class MauiProgram
 #endif
 
         builder.Services.AddSingleton<ViewModels.Main>();
+        builder.Services.AddTransient<ViewModels.Question>();
         builder.Services.AddSingleton<QuizService>();
         builder.Services.AddSingleton<QuestionService>();
+        builder.Services.AddSingleton<IPopupService, PopupService>();
 
         return builder.Build();
     }

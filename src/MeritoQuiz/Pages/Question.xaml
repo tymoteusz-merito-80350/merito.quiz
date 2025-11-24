@@ -33,10 +33,10 @@
                     </CollectionView>
                     
                     <Button
-                        x:Name="GeneralButton"
+                        x:Name="CheckAnswerButton"
                         Text="Sprawdź"
                         HorizontalOptions="Fill"
-                        Clicked="GeneralButton_OnClicked" />
+                        Command="{Binding CheckAnswerCommand}" />
                 </VerticalStackLayout>
             </Border>
         </VerticalStackLayout>
