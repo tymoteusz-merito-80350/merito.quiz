@@ -30,7 +30,7 @@ public class MeritoQuizDbContext(DbContextOptions<MeritoQuizDbContext> options) 
         {
             entity.ToTable("Questions");
             entity.HasKey(q => q.Id);
-            entity.Property(q => q.Text).IsRequired().HasMaxLength(72);
+            entity.Property(q => q.Text).IsRequired().HasMaxLength(128);
             entity.Property(q => q.ModifiedAt).IsRequired();
             entity.HasMany(q => q.Answers)
                 .WithOne(a => a.Question!)
@@ -42,7 +42,7 @@ public class MeritoQuizDbContext(DbContextOptions<MeritoQuizDbContext> options) 
         {
             entity.ToTable("Answers");
             entity.HasKey(a => a.Id);
-            entity.Property(a => a.Text).IsRequired().HasMaxLength(72);
+            entity.Property(a => a.Text).IsRequired().HasMaxLength(128);
             entity.Property(a => a.Order).IsRequired();
             entity.Property(a => a.IsCorrect).IsRequired();
         });

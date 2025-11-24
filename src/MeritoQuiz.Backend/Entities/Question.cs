@@ -14,7 +14,6 @@ public class Question
 
     public Category? Category { get; set; }
 
-    [MaxLength(72)]
     public string Text { get; set; } = null!;
 
     public DateTime ModifiedAt { get; set; }

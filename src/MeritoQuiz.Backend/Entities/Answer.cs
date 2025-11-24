@@ -15,7 +15,6 @@ public class Answer
 
     public int Order { get; set; }
 
-    [MaxLength(72)]
     public string Text { get; set; } = null!;
 
     public bool IsCorrect { get; set; }
