@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- Link shared source files from the MAUI app to make them testable without MAUI runtime -->
+    <Compile Include="../MeritoQuiz/Models/Answer.cs">
+      <Link>Models/Answer.cs</Link>
+    </Compile>
+    <Compile Include="../MeritoQuiz/Models/Category.cs">
+      <Link>Models/Category.cs</Link>
+    </Compile>
+    <Compile Include="../MeritoQuiz/Models/Question.cs">
+      <Link>Models/Question.cs</Link>
+    </Compile>
+    <Compile Include="../MeritoQuiz/Services/QuizService.cs">
+      <Link>Services/QuizService.cs</Link>
+    </Compile>
+    <Compile Include="../MeritoQuiz/Services/QuestionService.cs">
+      <Link>Services/QuestionService.cs</Link>
+    </Compile>
+  </ItemGroup>
+</Project>

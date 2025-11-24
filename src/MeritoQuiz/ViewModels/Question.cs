@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using MeritoQuiz.Services;
+using ModelAnswer = MeritoQuiz.Models.Answer;
 
 namespace MeritoQuiz.ViewModels;
 
@@ -34,7 +35,7 @@ public class Question : INotifyPropertyChanged
         }
     }
 
-    public ObservableCollection<Answer> Options { get; } = [];
+    public ObservableCollection<ModelAnswer> Options { get; } = [];
 
     public ICommand CheckAnswerCommand { get; }
 
@@ -85,15 +86,19 @@ public class Question : INotifyPropertyChanged
         await Shell.Current.GoToAsync(nameof(Pages.Question), animate: true);
     }
 
-    public void SetOptions(IEnumerable<Models.Answer> answers)
+    public void SetOptions(IEnumerable<ModelAnswer> answers)
     {
         Options.Clear();
 
         foreach (var answer in answers)
         {
-            Options.Add(new Answer
+            // Create a copy to avoid mutating the underlying quiz model state with selection
+            Options.Add(new ModelAnswer
             {
+                Order = answer.Order,
                 Text = answer.Text,
+                IsCorrect = answer.IsCorrect,
+                IsSelected = false,
             });
         }
     }
